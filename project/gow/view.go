@@ -9,16 +9,16 @@ import (
 type View interface {
 	SetVisible(bool)
 	IsVisible() bool
+	CreateView(ViewInfo)
 }
 type ViewStatus struct {
-	x      int32
-	y      int32
-	width  int32
-	height int32
+	hWnd   HWND
+	status bool
 }
 
 type ViewInfo struct {
-	view       View
+	ViewStatus
+	View
 	hWndParent HWND
 	hMenu      HMENU
 	hlnstnce   HINSTANCE
@@ -27,41 +27,51 @@ type ViewInfo struct {
 	name       string
 	title      string
 	ipParam    *uintptr
-	ViewStatus
+	x          int32
+	y          int32
+	width      int32
+	height     int32
 }
 
-func (v *ViewInfo) init() {
+func (info *ViewInfo) init() {
 	println("view init sta")
-	v.exStyle = WS_EX_CLIENTEDGE
-	v.width = 600
-	v.height = 400
-	//	v.x = (GetSystemMetrics(SM_CXSCREEN) - 600) >> 1
-	//	v.y = (GetSystemMetrics(SM_CXSCREEN) - 400) >> 1
-	v.x = 0
-	v.y = 0
-	v.exStyle = WS_EX_CLIENTEDGE
-	v.style = (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS)
-	v.name = "main"
-	v.title = "main"
+	info.exStyle = WS_EX_CLIENTEDGE
+	info.width = 600
+	info.height = 400
+	//	info.x = (GetSystemMetrics(SM_CXSCREEN) - 600) >> 1
+	//	info.y = (GetSystemMetrics(SM_CXSCREEN) - 400) >> 1
+	info.x = 0
+	info.y = 0
+	info.exStyle = WS_EX_CLIENTEDGE
+	info.style = (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS)
+	info.name = "main"
+	info.title = "main"
+}
+func SetVisible(b bool) {
+
+}
+func IsVisible() (b bool) {
+	return
 }
 
-func CreateView(v ViewInfo) HWND {
-	fmt.Println(v)
-	v.init()
-	hHandle := CreateWindowEx(
-		v.exStyle,
-		toTEXT(v.name),
-		toTEXT(v.title),
-		v.style,
-		v.x,
-		v.y,
-		v.width,
-		v.height,
-		v.hWndParent,
-		v.hMenu,
-		v.hlnstnce,
-		US.Pointer(v.ipParam))
-	return hHandle
+func (info *ViewInfo) Create() HWND {
+
+	info.init()
+	fmt.Println(info)
+	h := CreateWindowEx(
+		info.exStyle,
+		toTEXT(info.name),
+		toTEXT(info.title),
+		info.style,
+		info.x,
+		info.y,
+		info.width,
+		info.height,
+		info.hWndParent,
+		info.hMenu,
+		info.hlnstnce,
+		US.Pointer(info.ipParam))
+	return h
 }
 
 /*

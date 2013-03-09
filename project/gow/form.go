@@ -79,11 +79,21 @@ func formProc(hWnd HWND, uiMsg uint32, wp, lp uintptr) uintptr {
 	switch uiMsg {
 	case WM_CREATE:
 		println("called ")
-		hBtn = addButton(10, 10, 100, 40, hWnd, "确定")
+		var b ButtonInfo
+		b.x = 60
+		b.y = 60
+		b.height = 100
+		b.width = 40
+		b.hWndParent = hWnd
+		b.name = "OK"
+		//hBtn = addButton(10, 10, 100, 40, hWnd, "确定")
+		hBtn = b.Create()
+		//m := CreateMessage()
+		//m.ShowWithText("create", strconv.Itoa(int(uiMsg)))
 		return 0
 	case WM_COMMAND:
 		m := CreateMessage()
-		m.ShowWithText(strconv.Itoa(int(uiMsg)))
+		m.ShowWithText("command", strconv.Itoa(int(uiMsg)))
 	case WM_DESTROY:
 		os.Exit(0)
 	}
@@ -124,7 +134,7 @@ func CreateMainWindow(name string, strTitle string, v ViewInfo) Form {
 	println(f.name)
 	RegisterClass()
 	f.hWnd =
-		CreateView(f.ViewInfo)
+		f.Create()
 		/*	CreateWindowEx(
 				WS_EX_CLIENTEDGE,
 				toTEXT(f.name),
